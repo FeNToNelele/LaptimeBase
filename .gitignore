@@ -1,0 +1,7 @@
+LaptimeBaseAPI/bin
+LaptimeBaseAPI/obj
+LaptimeBaseAPI/.vs
+LaptimeBaseAPI/*.user
+LaptimeBaseAPI/*.suo
+LaptimeBaseAPI/*.cache
+LaptimeBaseAPI/*.swp
