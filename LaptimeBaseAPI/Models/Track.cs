@@ -8,7 +8,7 @@ namespace LaptimeBaseAPI.Models
         [Column("id")]
         public int Id { get; set; }
         [Column("name")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public ICollection<Session> Sessions { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using LaptimeBaseAPI.Data;
 using LaptimeBaseAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace LaptimeBaseAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class usersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -27,27 +29,48 @@ namespace LaptimeBaseAPI.Controllers
 
         // GET api/<usersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<User>> Get(int id)
         {
-            return null;
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
+            return user;
         }
 
         // POST api/<usersController>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<ActionResult<User>> CreateUser(User newUser)
         {
+            _context.Users.Add(newUser);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (HasTakenCredentials(newUser.Username, newUser.Password))
+                    return Conflict();
+                else throw;
+            }
+            return CreatedAtAction(nameof(GetUsers), newUser);
         }
 
-        // PUT api/<usersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        private bool HasTakenCredentials(string username, string password)
         {
+            return _context.Users.Any(u => u.Username == username || u.Password == password);
         }
 
         // DELETE api/<usersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
+            var user = await _context.Users.FindAsync(id);
+            
+            if (user == null) return NotFound();
+            
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

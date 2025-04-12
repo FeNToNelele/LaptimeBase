@@ -14,7 +14,7 @@ namespace LaptimeBaseAPI.Models
         public Car Car { get; set; }
 
         [Column("name")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public ICollection<Laptime> Laptimes { get; set; } = new List<Laptime>();
     }

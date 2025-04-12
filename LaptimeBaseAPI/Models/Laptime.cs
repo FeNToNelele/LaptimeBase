@@ -6,17 +6,17 @@ namespace LaptimeBaseAPI.Models
     public class Laptime
     {
         [Column("id")]
-        public int Id { get; set; }
+        public required int Id { get; set; }
         [Column("time")]
-        public TimeSpan Time { get; set; }
+        public required TimeSpan Time { get; set; }
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Column("team_id")]
-        public int TeamId { get; set; }
-        public Team Team { get; set; }
+        public required int TeamId { get; set; }
+        public required Team Team { get; set; }
         [Column("session_id")]
-        public int SessionId { get; set; }
-        public Session Session { get; set; }
+        public required int SessionId { get; set; }
+        public required Session Session { get; set; }
     }
 }

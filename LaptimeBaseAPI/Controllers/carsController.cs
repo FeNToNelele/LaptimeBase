@@ -1,5 +1,4 @@
-﻿using System.Formats.Asn1;
-using LaptimeBaseAPI.Data;
+﻿using LaptimeBaseAPI.Data;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,43 +9,43 @@ namespace LaptimeBaseAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "admin")]
-    public class TracksController : ControllerBase
+    public class CarsController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public TracksController(AppDbContext context)
+        public CarsController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/tracks
+        // GET: api/cars
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Track>>> GetTracks()
+        public async Task<ActionResult<IEnumerable<Car>>> GetCars()
         {
-            return await _context.Tracks.ToListAsync();
+            return await _context.Cars.ToListAsync();
         }
 
-        // POST: api/tracks
+        // POST: api/cars
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTrack(Track newTrack)
+        public async Task<ActionResult<Team>> PostCar(Car newCar)
         {
-            _context.Tracks.Add(newTrack);
+            _context.Cars.Add(newCar);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (TrackExists(newTrack.Name))
+                if (CarExists(newCar.Class))
                     return Conflict();
                 else throw;
             }
-            return CreatedAtAction(nameof(GetTracks), newTrack);
+            return CreatedAtAction(nameof(GetCars), newCar);
         }
 
-        private bool TrackExists(string trackName)
+        private bool CarExists(string carClass)
         {
-            return _context.Tracks.Any(t => t.Name == trackName);
+            return _context.Cars.Any(c => c.Class == carClass);
         }
     }
 }
