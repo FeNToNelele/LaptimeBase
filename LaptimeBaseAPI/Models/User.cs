@@ -6,15 +6,15 @@ namespace LaptimeBaseAPI.Models
     public class User
     {
         [Column("id")]
-        public int Id { get; set; }
+        public required int Id { get; set; }
         [Column("username")]
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
         [Column("password")]
-        public string Password { get; set; } // Store hashed passwords only
+        public required string Password { get; set; } // Store hashed passwords only
 
         [Column("is_admin")]
-        public bool IsAdmin { get; set; }
+        public required bool IsAdmin { get; set; }
 
         public List<Team> Teams { get; set; }
     }
