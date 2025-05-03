@@ -1,14 +1,16 @@
 ﻿using LaptimeBaseAPI.Data;
+using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Team;
 
 namespace LaptimeBaseAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+    // [Authorize(Roles = "admin")]
     public class TeamsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -20,12 +22,16 @@ namespace LaptimeBaseAPI.Controllers
 
         // GET: api/teams
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Team>>> GetTeams()
+        public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams()
         {
-            return await _context.Teams
-                .Include(t => t.User) // owner of the team
-                .Include(t => t.Car)
-                .ToListAsync();
+            var result =
+                (await _context.Teams
+                    .Include(t => t.User) // owner of the team
+                    .Include(t => t.Car)
+                    .ToListAsync())
+                .Select(x => x.ToTeamDto());
+            
+            return Ok(result);
         }
 
         // POST: api/teams

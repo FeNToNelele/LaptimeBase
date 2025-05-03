@@ -16,6 +16,9 @@ var backendUri = new Uri("https://localhost:7160");
 builder.Services.AddRefitClient<ICarService>()
     .ConfigureHttpClient(x => x.BaseAddress = backendUri);
 
+builder.Services.AddRefitClient<ITeamService>()
+    .ConfigureHttpClient(x => x.BaseAddress = backendUri);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
