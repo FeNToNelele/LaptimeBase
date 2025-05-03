@@ -1,8 +1,10 @@
 ﻿using LaptimeBaseAPI.Data;
+using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Car;
 
 namespace LaptimeBaseAPI.Controllers
 {
@@ -20,9 +22,12 @@ namespace LaptimeBaseAPI.Controllers
 
         // GET: api/cars
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Car>>> GetCars()
+        public async Task<ActionResult<IEnumerable<CarDto>>> GetCars()
         {
-            return await _context.Cars.ToListAsync();
+            var result = (await _context.Cars.ToListAsync())
+                .Select(x => x.ToCarDto());
+
+            return Ok(result);
         }
 
         // POST: api/cars

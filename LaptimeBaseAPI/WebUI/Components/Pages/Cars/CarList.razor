@@ -1,0 +1,49 @@
+@page "/car"
+@using Shared.Car
+@using WebUI.Services
+@inject ILogger<CarList> Logger
+@inject ICarService CarService
+@inject ISnackbar Snackbar
+
+<PageTitle>Cars</PageTitle>
+
+<MudText Typo="Typo.h5">Cars</MudText>
+<MudButton Color="Color.Primary">
+    <MudIcon Icon="@Icons.Material.Filled.Add" />
+    New car
+</MudButton>
+<MudDataGrid Items="_cars" Virtualize="true" Loading="Loading" >
+    <Columns>
+        <PropertyColumn Property="x => x.Class" Title="Class" />
+        <TemplateColumn>
+            <CellTemplate>
+                @{
+                    var uri = $"/cars/{context?.Item?.Id}";
+                    
+                    <MudButton Href="@uri">Details</MudButton>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private List<CarDto>? _cars;
+    
+    private bool Loading => _cars is null || _cars.Count == 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _cars = await CarService.GetCarsAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+            Snackbar.Add("Something went wrong. Please try again later.", Severity.Error);
+        }
+    }
+
+}
