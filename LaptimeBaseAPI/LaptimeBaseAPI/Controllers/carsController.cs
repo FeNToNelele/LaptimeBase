@@ -32,9 +32,12 @@ namespace LaptimeBaseAPI.Controllers
 
         // POST: api/cars
         [HttpPost]
-        public async Task<ActionResult<Team>> PostCar(Car newCar)
+        public async Task<ActionResult<CarDto>> PostCar(NewCarRequest request)
         {
+            var newCar = request.ToCarModel();
+
             _context.Cars.Add(newCar);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -45,7 +48,7 @@ namespace LaptimeBaseAPI.Controllers
                     return Conflict();
                 else throw;
             }
-            return CreatedAtAction(nameof(GetCars), newCar);
+            return CreatedAtAction(nameof(GetCars), newCar.ToCarDto());
         }
 
         private bool CarExists(string carClass)

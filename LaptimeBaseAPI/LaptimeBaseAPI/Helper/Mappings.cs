@@ -14,8 +14,17 @@ public static class Mappings
     {
         return new Car
         {
+            Id = carDto.Id,
             Class = carDto.Class,
             Teams = carDto.Teams.Select(ToTeamModel).ToList(),
+        };
+    }
+
+    public static Car ToCarModel(this NewCarRequest newCar)
+    {
+        return new Car
+        {
+            Class = newCar.Class,
         };
     }
     
