@@ -10,7 +10,7 @@ namespace LaptimeBaseAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
+    // [Authorize(Roles = "admin")]
     public class CarsController : ControllerBase
     {
         private readonly AppDbContext _context;
