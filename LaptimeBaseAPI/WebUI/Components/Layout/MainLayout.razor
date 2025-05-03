@@ -4,6 +4,8 @@
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="ToggleDrawer" />
         <MudText Typo="Typo.h5">Laptime</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.ChatBubble" Color="Color.Warning" Edge="Edge.End" OnClick="_aiChat.ToggleChat"/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavigationMenu />
@@ -13,6 +15,7 @@
             @Body
         </MudContainer>
     </MudMainContent>
+    <AiChat @ref="_aiChat" />
 </MudLayout>
 
 <MudThemeProvider />
@@ -29,6 +32,7 @@
 @code {
 
     private bool _drawerOpen = true;
+    private AiChat _aiChat;
     
     void ToggleDrawer() => _drawerOpen = !_drawerOpen;
 
