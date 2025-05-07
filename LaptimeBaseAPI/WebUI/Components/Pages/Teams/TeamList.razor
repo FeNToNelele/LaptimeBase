@@ -1,0 +1,35 @@
+@page "/team"
+@using Shared.Team
+@using WebUI.Services
+@inject ITeamService TeamService
+@inject ILogger<TeamList> Logger
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h1">Teams</MudText>
+
+<MudDataGrid Items="_teams" Virtualize="true" Loading="Loading">
+    <Columns>
+        <PropertyColumn Property="x => x.Name" Title="Name" />
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private List<TeamDto>? _teams;
+
+    private bool Loading => _teams is null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _teams = await TeamService.GetTeamsAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex.Message);
+            Snackbar.Add("Something went wrong. Please try again later.", Severity.Error);
+        }
+    }
+
+}

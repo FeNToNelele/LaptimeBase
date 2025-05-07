@@ -1,0 +1,38 @@
+@page "/car/new"
+
+@using Shared.Car
+@using WebUI.Services
+@inject ILogger<NewCar> Logger
+@inject ISnackbar Snackbar
+@inject ICarService CarService
+@inject NavigationManager NavigationManager
+
+<MudText Typo="Typo.h5">New Car</MudText>
+
+<EditForm Model="_request" OnValidSubmit="SubmitAsync">
+    <MudInputLabel ForId="request-class">Class</MudInputLabel>
+    <MudInputString @bind-Text="_request.Class" InputId="request-class" />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+        <MudIconButton Icon="@Icons.Material.Filled.Add" />
+        Add
+    </MudButton>
+</EditForm>
+
+@code {
+
+    private NewCarRequest _request = new();
+
+    private async Task SubmitAsync()
+    {
+        try
+        {
+            await CarService.PostCarAsync(_request);
+            NavigationManager.NavigateTo("/car");
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add("Something went wrong. Please try again later.", Severity.Error);
+            Logger.LogError(e.Message);
+        }
+    }
+}

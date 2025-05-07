@@ -1,0 +1,19 @@
+<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Temporary" Anchor="Anchor.End" Elevation="2" Width="400px">
+    <MudChat ChatPosition="ChatBubblePosition.Start">
+        <MudAvatar>AI</MudAvatar>
+        <MudChatBubble>
+            Hello, How can I help you today?
+        </MudChatBubble>
+    </MudChat>
+</MudDrawer>
+
+@code {
+
+    private bool _drawerOpen = false;
+
+    public void ToggleChat()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+}
