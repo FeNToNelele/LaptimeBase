@@ -1,8 +1,10 @@
 ﻿using LaptimeBaseAPI.Data;
+using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.User;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -38,8 +40,10 @@ namespace LaptimeBaseAPI.Controllers
 
         // POST api/<usersController>
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User newUser)
+        public async Task<ActionResult<User>> CreateUser(NewUserRequest newUserRequest)
         {
+            var newUser = newUserRequest.ToUserModel();
+
             _context.Users.Add(newUser);
             try
             {

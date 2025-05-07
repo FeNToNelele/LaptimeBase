@@ -1,7 +1,9 @@
 ﻿using LaptimeBaseAPI.Data;
+using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Session;
 
 namespace LaptimeBaseAPI.Controllers
 {
@@ -34,11 +36,13 @@ namespace LaptimeBaseAPI.Controllers
 
         // POST: api/sessions
         [HttpPost]
-        public async Task<ActionResult<Session>> PostSession(Session session)
+        public async Task<ActionResult<SessionDto>> PostSession(NewSessionRequest session)
         {
-            _context.Sessions.Add(session);
+            var newSession = session.ToSessionModel();
+
+            _context.Sessions.Add(newSession);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetSession), new { id = session.Id }, session);
+            return CreatedAtAction(nameof(GetSessions), newSession.ToSessionDto());
         }
 
         // PUT: api/sessions/5

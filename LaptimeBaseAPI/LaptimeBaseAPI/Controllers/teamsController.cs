@@ -26,7 +26,7 @@ namespace LaptimeBaseAPI.Controllers
         {
             var result =
                 (await _context.Teams
-                    .Include(t => t.User) // owner of the team
+                    .Include(t => t.User) // team owner's name
                     .Include(t => t.Car)
                     .ToListAsync())
                 .Select(x => x.ToTeamDto());

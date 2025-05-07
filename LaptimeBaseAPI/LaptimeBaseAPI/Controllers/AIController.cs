@@ -18,7 +18,7 @@ namespace LaptimeBaseAPI.Controllers
         }
 
         [HttpPost("askai")]
-        public async Task<IActionResult> AskAI([FromBody] AIQuestionDto question)
+        public async Task<IActionResult> AskAI([FromBody] QuestionForAI question)
         {
             var response = await _httpClient.PostAsJsonAsync("/ask", new { Question = question });
             return Ok(await response.Content.ReadFromJsonAsync<object>());

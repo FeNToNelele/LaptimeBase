@@ -10,15 +10,6 @@ namespace LaptimeBaseAPI.Helper;
 
 public static class Mappings
 {
-    public static Car ToCarModel(this CarDto carDto)
-    {
-        return new Car
-        {
-            Id = carDto.Id,
-            Class = carDto.Class,
-            Teams = carDto.Teams.Select(ToTeamModel).ToList(),
-        };
-    }
 
     public static Car ToCarModel(this NewCarRequest newCar)
     {
@@ -38,16 +29,13 @@ public static class Mappings
         };
     }
     
-    public static Team ToTeamModel(this TeamDto teamDto)
+    public static Team ToTeamModel(this NewTeamRequest newTeamRequest)
     {
         return new Team
         {
-            UserId = teamDto.UserId,
-            User = teamDto.User.ToUserModel(),
-            CarId = teamDto.CarId,
-            Car = teamDto.Car.ToCarModel(),
-            Name = teamDto.Name,
-            Laptimes = teamDto.Laptimes.Select(ToLaptimeModel).ToList()
+            UserId = newTeamRequest.UserId,
+            CarId = newTeamRequest.CarId,
+            Name = newTeamRequest.Name
         };
     }
 
@@ -64,15 +52,13 @@ public static class Mappings
         };
     }
 
-    public static User ToUserModel(this UserDto userDto)
+    public static User ToUserModel(this NewUserRequest userDto)
     {
         return new User
         {
-            Id = userDto.Id,
             Username = userDto.Username,
             Password = userDto.Password,
-            IsAdmin = userDto.IsAdmin,
-            Teams = userDto.Teams.Select(ToTeamModel).ToList()
+            IsAdmin = userDto.IsAdmin
         };
     }
 
@@ -115,17 +101,14 @@ public static class Mappings
         };
     }
     
-    public static Session ToSessionModel(this SessionDto sessionDto)
+    public static Session ToSessionModel(this NewSessionRequest sessionRequest)
     {
         return new Session
         {
-            Id = sessionDto.Id,
-            HeldAt = sessionDto.HeldAt,
-            AmbientTemp = sessionDto.AmbientTemp,
-            TrackTemp = sessionDto.TrackTemp,
-            TrackId = sessionDto.TrackId,
-            Track = sessionDto.Track.ToTrackModel(),
-            Laptimes = sessionDto.Laptimes.Select(ToLaptimeModel).ToList()
+            HeldAt = sessionRequest.HeldAt,
+            AmbientTemp = sessionRequest.AmbientTemp,
+            TrackTemp = sessionRequest.TrackTemp,
+            TrackId = sessionRequest.TrackId,
         };
     }
 
@@ -143,13 +126,21 @@ public static class Mappings
         };
     }
 
-    public static Track ToTrackModel(this TrackDto trackDto)
+    //public static Track ToTrackModel(this TrackDto trackDto)
+    //{
+    //    return new Track
+    //    {
+    //        Id = trackDto.Id,
+    //        Name = trackDto.Name,
+    //        Sessions = trackDto.Sessions.Select(ToSessionModel).ToList(),
+    //    };
+    //}
+
+    public static Track ToTrackModel(this NewTrackRequest request)
     {
         return new Track
         {
-            Id = trackDto.Id,
-            Name = trackDto.Name,
-            Sessions = trackDto.Sessions.Select(ToSessionModel).ToList(),
+            Name = request.Name
         };
     }
 

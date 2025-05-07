@@ -6,7 +6,7 @@ namespace LaptimeBaseAPI.Models
     public class User
     {
         [Column("id")]
-        public required int Id { get; set; }
+        public int Id { get; set; }
         [Column("username")]
         public required string Username { get; set; }
 

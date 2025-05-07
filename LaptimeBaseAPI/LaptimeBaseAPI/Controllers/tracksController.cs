@@ -4,6 +4,8 @@ using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Track;
+using LaptimeBaseAPI.Helper;
 
 namespace LaptimeBaseAPI.Controllers
 {
@@ -28,8 +30,10 @@ namespace LaptimeBaseAPI.Controllers
 
         // POST: api/tracks
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTrack(Track newTrack)
+        public async Task<ActionResult<Team>> PostTrack(NewTrackRequest request)
         {
+            var newTrack = request.ToTrackModel();
+
             _context.Tracks.Add(newTrack);
             try
             {
@@ -41,7 +45,7 @@ namespace LaptimeBaseAPI.Controllers
                     return Conflict();
                 else throw;
             }
-            return CreatedAtAction(nameof(GetTracks), newTrack);
+            return CreatedAtAction(nameof(GetTracks), newTrack.ToTrackDto());
         }
 
         private bool TrackExists(string trackName)
