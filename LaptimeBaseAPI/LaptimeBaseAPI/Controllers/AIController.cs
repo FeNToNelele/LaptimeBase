@@ -1,5 +1,6 @@
 ﻿using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Shared.AIQuestion;
 
 namespace LaptimeBaseAPI.Controllers
 {
@@ -17,11 +18,9 @@ namespace LaptimeBaseAPI.Controllers
         }
 
         [HttpPost("askai")]
-        public async Task<IActionResult> AskAI() //todo: provide data
+        public async Task<IActionResult> AskAI([FromBody] AIQuestionDto question)
         {
-            object data = null;
-
-            var response = await _httpClient.PostAsJsonAsync("/ask", data);
+            var response = await _httpClient.PostAsJsonAsync("/ask", new { Question = question });
             return Ok(await response.Content.ReadFromJsonAsync<object>());
         }
     }
