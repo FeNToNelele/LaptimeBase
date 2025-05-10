@@ -73,17 +73,14 @@ public static class Mappings
             Teams = user.Teams.Select(ToTeamDto).ToList()
         };
     }    
-    public static Laptime ToLaptimeModel(this LaptimeDto laptimeDto)
+    public static Laptime ToLaptimeModel(this NewLapRequest newLapRequest)
     {
         return new Laptime
         {
-            Id = laptimeDto.Id,
-            Time = laptimeDto.Time,
-            CreatedAt = laptimeDto.CreatedAt,
-            TeamId = laptimeDto.TeamId,
-            Team = laptimeDto.Team.ToTeamModel(),
-            SessionId = laptimeDto.SessionId,
-            Session = laptimeDto.Session.ToSessionModel()
+            Time = newLapRequest.Laptime,
+            CreatedAt = DateTime.Now,
+            TeamId = newLapRequest.TeamId,
+            SessionId = newLapRequest.SessionId
         };
     }
 
