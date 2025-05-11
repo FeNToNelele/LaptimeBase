@@ -118,7 +118,7 @@ public static class Mappings
             AmbientTemp = session.AmbientTemp,
             TrackTemp = session.TrackTemp,
             TrackId = session.TrackId,
-            Track = session.Track.ToTrackDto(),
+            Track = session.Track?.ToTrackDto(),
             Laptimes = session.Laptimes.Select(ToLaptimeDto).ToList()
         };
     }

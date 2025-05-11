@@ -47,15 +47,29 @@ namespace LaptimeBaseAPI.Controllers
 
         // PUT: api/sessions/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSession(int id, Session session)
+        public async Task<IActionResult> PutSession(int id, UpdateSessionRequest request)
         {
-            if (id != session.Id) return BadRequest();
-            _context.Entry(session).State = EntityState.Modified;
-            try { await _context.SaveChangesAsync(); }
+            var session = await _context.Sessions.FindAsync(id);
+            if (session == null)
+            {
+                return NotFound();
+            }
+
+            session.HeldAt = request.HeldAt;
+            session.AmbientTemp = request.AmbientTemp;
+            session.TrackTemp = request.TrackTemp;
+            session.TrackId = request.TrackId;
+
+            try 
+            { 
+                await _context.SaveChangesAsync(); 
+            }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SessionExists(id)) return NotFound();
-                else throw;
+                if (!SessionExists(id)) 
+                    return NotFound();
+                else 
+                    throw;
             }
             return NoContent();
         }
@@ -87,12 +101,9 @@ namespace LaptimeBaseAPI.Controllers
                 .Where(lt => lt.SessionId == id)
                 .Include(lt => lt.Team)
                 .ThenInclude(lt => lt.Car)
-                .Include(lt => lt.Time)
-                .Include(lt => lt.CreatedAt)
                 .ToListAsync();
 
             return laps;
         }
-
     }
 }
