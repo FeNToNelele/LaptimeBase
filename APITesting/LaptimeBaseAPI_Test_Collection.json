@@ -1,0 +1,578 @@
+{
+	"info": {
+		"_postman_id": "1bbf0b09-3154-47be-83d8-20f984d617db",
+		"name": "LaptimeBaseAPI Test Collection",
+		"description": "Collection for testing LaptimeBasAPI application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44853628",
+		"_collection_link": "https://b-4971002.postman.co/workspace/B's-Workspace~5f65885e-80ad-4e4d-88fd-40dfed4071d7/collection/44853628-1bbf0b09-3154-47be-83d8-20f984d617db?action=share&source=collection_link&creator=44853628"
+	},
+	"item": [
+		{
+			"name": "Cars",
+			"item": [
+				{
+					"name": "Get All Cars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Cars",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Car by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Cars/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Car",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"class\": \"GT3\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Cars",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Car",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"class\": \"GT4\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Cars/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Car",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Cars/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Cars",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tracks",
+			"item": [
+				{
+					"name": "Get All Tracks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Tracks",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Tracks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Track",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Spa\",\n    \"location\": \"Belgium\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Tracks",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Tracks"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teams",
+			"item": [
+				{
+					"name": "Get All Teams",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Teams",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Team",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"carId\": 1\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Teams",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Teams"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sessions",
+			"item": [
+				{
+					"name": "Get All Sessions (Non functional)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Sessions",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Sessions/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Sessions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"trackId\": 1,\n    \"date\": \"2024-03-20T10:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Sessions",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Sessions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Session",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 1,\n    \"trackId\": 1,\n    \"date\": \"2024-03-20T11:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Sessions/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Sessions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Session",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Sessions/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Sessions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session Laptimes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Sessions/1/laptimes",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Sessions",
+								"1",
+								"laptimes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Users",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Users/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"testpass\",\n    \"email\": \"test@example.com\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7160/api/Users",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7160/api/Users/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7160",
+							"path": [
+								"api",
+								"Users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
