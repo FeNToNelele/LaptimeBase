@@ -16,6 +16,4 @@ public class SessionDto
     public int TrackId { get; set; }
     
     public TrackDto Track { get; set; }
-    
-    public List<LaptimeDto> Laptimes { get; set; } 
 }

@@ -118,20 +118,18 @@ public static class Mappings
             AmbientTemp = session.AmbientTemp,
             TrackTemp = session.TrackTemp,
             TrackId = session.TrackId,
-            Track = session.Track?.ToTrackDto(),
-            Laptimes = session.Laptimes.Select(ToLaptimeDto).ToList()
+            Track = session.Track.ToTrackDto(),
         };
     }
 
-    //public static Track ToTrackModel(this TrackDto trackDto)
-    //{
-    //    return new Track
-    //    {
-    //        Id = trackDto.Id,
-    //        Name = trackDto.Name,
-    //        Sessions = trackDto.Sessions.Select(ToSessionModel).ToList(),
-    //    };
-    //}
+    public static Track ToTrackModel(this TrackDto trackDto)
+    {
+        return new Track
+        {
+            Id = trackDto.Id,
+            Name = trackDto.Name,
+        };
+    }
 
     public static Track ToTrackModel(this NewTrackRequest request)
     {
@@ -147,7 +145,6 @@ public static class Mappings
         {
             Id = track.Id,
             Name = track.Name,
-            Sessions = track.Sessions.Select(ToSessionDto).ToList(),
         };
     }
 }

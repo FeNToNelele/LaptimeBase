@@ -20,9 +20,14 @@ namespace LaptimeBaseAPI.Controllers
 
         // GET: api/sessions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Session>>> GetSessions()
+        public async Task<ActionResult<IEnumerable<SessionDto>>> GetSessions()
         {
-            return await _context.Sessions.Include(s => s.Track).ToListAsync();
+            var result = (await _context.Sessions
+                    .Include(s => s.Track)
+                    .ToListAsync())
+                .Select(x => x.ToSessionDto());
+
+            return Ok(result);
         }
 
         // GET: api/sessions/5
@@ -97,11 +102,7 @@ namespace LaptimeBaseAPI.Controllers
                 return NotFound();
             }
 
-            var laps = await _context.Laptimes
-                .Where(lt => lt.SessionId == id)
-                .Include(lt => lt.Team)
-                .ThenInclude(lt => lt.Car)
-                .ToListAsync();
+            var laps = await _context.Laptimes.ToListAsync();
 
             return laps;
         }

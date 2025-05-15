@@ -7,6 +7,4 @@ public class TrackDto
     public int Id { get; set; }
     
     public string Name { get; set; }
-    
-    public List<SessionDto> Sessions { get; set; }
 }
