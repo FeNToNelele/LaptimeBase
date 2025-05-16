@@ -12,11 +12,11 @@ namespace LaptimeBaseAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "admin")]
-    public class usersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public usersController(AppDbContext context)
+        public UsersController(AppDbContext context)
         {
             _context = context;
         }
