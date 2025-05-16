@@ -1,0 +1,43 @@
+@page "/sessions"
+@using Shared.Session
+@using WebUI.Services
+@inject ISessionService SessionService
+
+<MudText Typo="Typo.h3">
+    Sessions
+</MudText>
+
+<MudDataGrid Items="_sessions" Loading="_loading">
+    <Columns>
+        <TemplateColumn Title="#">
+            <CellTemplate>
+                @{
+                    var link = $"/sessions/{context.Item.Id}";
+
+                    <MudLink Href="@link">
+                        @context.Item.Id
+                    </MudLink>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.Track.Name" />
+        <PropertyColumn Property="x => x.HeldAt" />
+        <TemplateColumn Title="Temperature">
+            <CellTemplate>
+                @(context.Item.TrackTemp)/@(context.Item.AmbientTemp) C&deg;
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private bool _loading = true;
+    private List<SessionDto> _sessions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _sessions = await SessionService.GetAllSessionsAsync();
+        _loading = false;
+    }
+}

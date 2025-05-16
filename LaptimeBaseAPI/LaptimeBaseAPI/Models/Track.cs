@@ -6,10 +6,10 @@ namespace LaptimeBaseAPI.Models
     public class Track
     {
         [Column("id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Column("name")]
         public required string Name { get; set; }
-
-        public ICollection<Session> Sessions { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LaptimeBaseAPI.Models
 {
@@ -6,17 +7,16 @@ namespace LaptimeBaseAPI.Models
     public class Laptime
     {
         [Column("id")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Column("time")]
         public required TimeSpan Time { get; set; }
-        [Column("created_at")]
-        public required DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Column("team_id")]
-        public required int TeamId { get; set; }
-        public Team Team { get; set; }
-        [Column("session_id")]
-        public required int SessionId { get; set; }
-        public Session Session { get; set; }
+        [Column("created_at")]
+        public required DateTime CreatedAt { get; set; }
+        
+        public virtual Team Team { get; set; }
     }
 }

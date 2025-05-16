@@ -13,9 +13,7 @@ public class SessionDto
     
     public int TrackTemp { get; set; }
     
-    public int TrackId { get; set; }
-    
     public TrackDto Track { get; set; }
     
-    public List<LaptimeDto> Laptimes { get; set; } 
+    public List<LaptimeDto> Laptimes { get; set; }
 }

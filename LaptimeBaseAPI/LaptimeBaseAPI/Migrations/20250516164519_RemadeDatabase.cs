@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LaptimeBaseAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class RemadeDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,14 +61,14 @@ namespace LaptimeBaseAPI.Migrations
                     held_at = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ambient_temp = table.Column<int>(type: "INTEGER", nullable: false),
                     track_temp = table.Column<int>(type: "INTEGER", nullable: false),
-                    track_id = table.Column<int>(type: "INTEGER", nullable: false)
+                    TrackId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_session", x => x.id);
                     table.ForeignKey(
-                        name: "FK_session_track_track_id",
-                        column: x => x.track_id,
+                        name: "FK_session_track_TrackId",
+                        column: x => x.TrackId,
                         principalTable: "track",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -78,26 +78,26 @@ namespace LaptimeBaseAPI.Migrations
                 name: "team",
                 columns: table => new
                 {
-                    user_id = table.Column<int>(type: "INTEGER", nullable: false),
-                    car_id = table.Column<int>(type: "INTEGER", nullable: false),
-                    name = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CarId = table.Column<int>(type: "INTEGER", nullable: false),
+                    name = table.Column<string>(type: "TEXT", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_team", x => new { x.user_id, x.car_id });
-                    table.UniqueConstraint("AK_team_user_id", x => x.user_id);
+                    table.PrimaryKey("PK_team", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_team_car_car_id",
-                        column: x => x.car_id,
+                        name: "FK_team_car_CarId",
+                        column: x => x.CarId,
                         principalTable: "car",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_team_user_user_id",
-                        column: x => x.user_id,
+                        name: "FK_team_user_UserId",
+                        column: x => x.UserId,
                         principalTable: "user",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -108,45 +108,49 @@ namespace LaptimeBaseAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     time = table.Column<TimeSpan>(type: "TEXT", nullable: false),
                     created_at = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    team_id = table.Column<int>(type: "INTEGER", nullable: false),
-                    session_id = table.Column<int>(type: "INTEGER", nullable: false)
+                    TeamId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SessionId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_laptime", x => x.id);
                     table.ForeignKey(
-                        name: "FK_laptime_session_session_id",
-                        column: x => x.session_id,
+                        name: "FK_laptime_session_SessionId",
+                        column: x => x.SessionId,
                         principalTable: "session",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_laptime_team_team_id",
-                        column: x => x.team_id,
+                        name: "FK_laptime_team_TeamId",
+                        column: x => x.TeamId,
                         principalTable: "team",
-                        principalColumn: "user_id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_laptime_session_id",
+                name: "IX_laptime_SessionId",
                 table: "laptime",
-                column: "session_id");
+                column: "SessionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_laptime_team_id",
+                name: "IX_laptime_TeamId",
                 table: "laptime",
-                column: "team_id");
+                column: "TeamId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_session_track_id",
+                name: "IX_session_TrackId",
                 table: "session",
-                column: "track_id");
+                column: "TrackId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_team_car_id",
+                name: "IX_team_CarId",
                 table: "team",
-                column: "car_id");
+                column: "CarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_team_UserId",
+                table: "team",
+                column: "UserId");
         }
 
         /// <inheritdoc />
