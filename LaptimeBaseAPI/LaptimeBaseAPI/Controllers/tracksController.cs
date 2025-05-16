@@ -1,7 +1,5 @@
-﻿using System.Formats.Asn1;
-using LaptimeBaseAPI.Data;
+﻿using LaptimeBaseAPI.Data;
 using LaptimeBaseAPI.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Track;
@@ -11,7 +9,6 @@ namespace LaptimeBaseAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "admin")]
     public class TracksController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -23,34 +20,36 @@ namespace LaptimeBaseAPI.Controllers
 
         // GET: api/tracks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Track>>> GetTracks()
+        public async Task<ActionResult<IEnumerable<TrackDto>>> GetTracks()
         {
-            return await _context.Tracks.ToListAsync();
+            var result = (await _context.Tracks.ToListAsync())
+                .Select(x => x.ToTrackDto());
+
+            return Ok(result);
         }
 
         // POST: api/tracks
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTrack(NewTrackRequest request)
+        public async Task<ActionResult<TrackDto>> PostTrack(NewTrackRequest request)
         {
-            var newTrack = request.ToTrackModel();
+            var existingTrack = await _context.Tracks
+                .FirstOrDefaultAsync(t => t.Name == request.Name);
+
+            if (existingTrack is not null)
+            {
+                return BadRequest("Track already exists.");
+            }
+            
+            var newTrack = new Track
+            {
+                Name = request.Name,
+            };
 
             _context.Tracks.Add(newTrack);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (TrackExists(newTrack.Name))
-                    return Conflict();
-                else throw;
-            }
-            return CreatedAtAction(nameof(GetTracks), newTrack.ToTrackDto());
-        }
 
-        private bool TrackExists(string trackName)
-        {
-            return _context.Tracks.Any(t => t.Name == trackName);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetTracks), newTrack.ToTrackDto());
         }
     }
 }

@@ -37,7 +37,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _sessions = await SessionService.GetAllSessions();
+        _sessions = await SessionService.GetAllSessionsAsync();
         _loading = false;
     }
 }

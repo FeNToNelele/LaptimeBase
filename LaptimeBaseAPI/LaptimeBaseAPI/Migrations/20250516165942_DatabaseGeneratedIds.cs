@@ -5,7 +5,7 @@
 namespace LaptimeBaseAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class RemoveCircularReference : Migration
+    public partial class DatabaseGeneratedIds : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

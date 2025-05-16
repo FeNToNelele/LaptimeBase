@@ -7,6 +7,8 @@ namespace LaptimeBaseAPI.Models
     public class Session
     {
         [Column("id")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Column("held_at")]
@@ -18,9 +20,8 @@ namespace LaptimeBaseAPI.Models
         [Column("track_temp")]
         public required int TrackTemp { get; set; } = 27;
 
-        [Column("track_id")]
-        public required int TrackId { get; set; }
-
         public virtual Track Track { get; set; }
+        
+        public virtual ICollection<Laptime> Laptimes { get; set; }
     }
 }

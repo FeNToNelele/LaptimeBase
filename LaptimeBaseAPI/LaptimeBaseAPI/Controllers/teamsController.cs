@@ -1,7 +1,6 @@
 ﻿using LaptimeBaseAPI.Data;
 using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Team;
@@ -24,35 +23,36 @@ namespace LaptimeBaseAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams()
         {
-            var result =
-                (await _context.Teams
-                    .Include(t => t.User) // team owner's name
-                    .Include(t => t.Car)
+            var result = (await _context.Teams
+                    .Include(x => x.Car)
                     .ToListAsync())
                 .Select(x => x.ToTeamDto());
             
             return Ok(result);
         }
-
+        
         // POST: api/teams
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTeam(Team team)
+        public async Task<ActionResult<TeamDto>> PostTeam(NewTeamRequest request)
         {
-            _context.Teams.Add(team);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (TeamExists(team.UserId, team.CarId))
-                    return Conflict();
-                else throw;
-            }
-            return CreatedAtAction(nameof(GetTeams), team);
-        }
+            var car = await _context.Cars.FindAsync(request.CarId);
 
-        private bool TeamExists(int userId, int carId) =>
-            _context.Teams.Any(e => e.UserId == userId && e.CarId == carId);
+            if (car is null)
+            {
+                return BadRequest($"Car with ID {request.CarId} not found.");
+            }
+
+            var team = new Team
+            {
+                Name = request.Name,
+                Car = car,
+            };
+            
+            _context.Teams.Add(team);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetTeams), team.ToTeamDto());
+        }
     }
 }

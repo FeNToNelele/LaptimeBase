@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LaptimeBaseAPI.Models
 {
@@ -6,10 +7,11 @@ namespace LaptimeBaseAPI.Models
     public class Car
     {
         [Column("id")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Column("class")]
         public string Class { get; set; } // GT3, GT4, etc.
-
-        public ICollection<Team> Teams { get; set; } = new List<Team>();
     }
 }

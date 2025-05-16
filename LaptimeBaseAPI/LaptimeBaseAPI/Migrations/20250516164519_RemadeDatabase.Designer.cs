@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LaptimeBaseAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250515182324_RemoveCircularReference")]
-    partial class RemoveCircularReference
+    [Migration("20250516164519_RemadeDatabase")]
+    partial class RemadeDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,13 +48,11 @@ namespace LaptimeBaseAPI.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("SessionId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("session_id");
+                    b.Property<int?>("SessionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TeamId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("team_id");
+                        .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("TEXT")
@@ -85,8 +83,7 @@ namespace LaptimeBaseAPI.Migrations
                         .HasColumnName("held_at");
 
                     b.Property<int>("TrackId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("track_id");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TrackTemp")
                         .HasColumnType("INTEGER")
@@ -101,22 +98,26 @@ namespace LaptimeBaseAPI.Migrations
 
             modelBuilder.Entity("LaptimeBaseAPI.Models.Team", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("user_id");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CarId")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("car_id");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
-                    b.HasKey("UserId", "CarId");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CarId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("team");
                 });
@@ -166,20 +167,15 @@ namespace LaptimeBaseAPI.Migrations
 
             modelBuilder.Entity("LaptimeBaseAPI.Models.Laptime", b =>
                 {
-                    b.HasOne("LaptimeBaseAPI.Models.Session", "Session")
-                        .WithMany()
-                        .HasForeignKey("SessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("LaptimeBaseAPI.Models.Session", null)
+                        .WithMany("Laptimes")
+                        .HasForeignKey("SessionId");
 
                     b.HasOne("LaptimeBaseAPI.Models.Team", "Team")
-                        .WithMany("Laptimes")
+                        .WithMany()
                         .HasForeignKey("TeamId")
-                        .HasPrincipalKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Session");
 
                     b.Navigation("Team");
                 });
@@ -187,7 +183,7 @@ namespace LaptimeBaseAPI.Migrations
             modelBuilder.Entity("LaptimeBaseAPI.Models.Session", b =>
                 {
                     b.HasOne("LaptimeBaseAPI.Models.Track", "Track")
-                        .WithMany("Sessions")
+                        .WithMany()
                         .HasForeignKey("TrackId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -198,35 +194,21 @@ namespace LaptimeBaseAPI.Migrations
             modelBuilder.Entity("LaptimeBaseAPI.Models.Team", b =>
                 {
                     b.HasOne("LaptimeBaseAPI.Models.Car", "Car")
-                        .WithMany("Teams")
+                        .WithMany()
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LaptimeBaseAPI.Models.User", "User")
+                    b.HasOne("LaptimeBaseAPI.Models.User", null)
                         .WithMany("Teams")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Car");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("LaptimeBaseAPI.Models.Car", b =>
-                {
-                    b.Navigation("Teams");
-                });
-
-            modelBuilder.Entity("LaptimeBaseAPI.Models.Team", b =>
+            modelBuilder.Entity("LaptimeBaseAPI.Models.Session", b =>
                 {
                     b.Navigation("Laptimes");
-                });
-
-            modelBuilder.Entity("LaptimeBaseAPI.Models.Track", b =>
-                {
-                    b.Navigation("Sessions");
                 });
 
             modelBuilder.Entity("LaptimeBaseAPI.Models.User", b =>
