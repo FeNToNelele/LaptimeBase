@@ -3,7 +3,6 @@ using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Shared.Laptime;
 using Shared.Session;
 
 namespace LaptimeBaseAPI.Controllers
@@ -99,26 +98,26 @@ namespace LaptimeBaseAPI.Controllers
         public async Task<IActionResult> PutSession(int id, UpdateSessionRequest request)
         {
             var session = await _context.Sessions.FindAsync(id);
-            if (session == null)
+
+            if (session is null)
             {
                 return NotFound();
+            }
+
+            var track = await _context.Tracks.FindAsync(request.TrackId);
+            
+            if (track is null)
+            {
+                return BadRequest($"Track with ID {request.TrackId} not found.");
             }
 
             session.HeldAt = request.HeldAt;
             session.AmbientTemp = request.AmbientTemp;
             session.TrackTemp = request.TrackTemp;
+            session.Track = track;
 
-            try 
-            { 
-                await _context.SaveChangesAsync(); 
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SessionExists(id)) 
-                    return NotFound();
-                else 
-                    throw;
-            }
+            await _context.SaveChangesAsync(); 
+
             return NoContent();
         }
 
@@ -127,32 +126,17 @@ namespace LaptimeBaseAPI.Controllers
         public async Task<IActionResult> DeleteSession(int id)
         {
             var session = await _context.Sessions.FindAsync(id);
-            if (session == null) return NotFound();
-            _context.Sessions.Remove(session);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
 
-        private bool SessionExists(int id) => _context.Sessions.Any(e => e.Id == id);
-
-        //GET: api/sessions/5/laptimes
-        [HttpGet("{id}/laptimes")]
-        public async Task<ActionResult<IEnumerable<LaptimeDto>>> GetLaptimesFromSession(int id)
-        {
-            var sessionExists = await _context.Sessions.AnyAsync(s => s.Id == id);
-            if (!sessionExists)
+            if (session is null)
             {
                 return NotFound();
             }
 
-            var laps = await _context.Laptimes
-                .Include(x => x.Team)
-                .ThenInclude(x => x.Car)
-                .ToListAsync();
+            _context.Sessions.Remove(session);
 
-            var result = laps.Select(x => x.ToLaptimeDto());
-            
-            return Ok(result);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
