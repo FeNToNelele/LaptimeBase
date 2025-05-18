@@ -1,19 +1,112 @@
-<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Temporary" Anchor="Anchor.End" Elevation="2" Width="400px">
-    <MudChat ChatPosition="ChatBubblePosition.Start">
-        <MudAvatar>AI</MudAvatar>
-        <MudChatBubble>
-            Hello, How can I help you today?
-        </MudChatBubble>
-    </MudChat>
+@using Shared.AIQuestion
+@using WebUI.Models
+@using WebUI.Services
+@inject IAIContext AIContext
+@inject IAIService AIService
+@inject ISnackbar Snackbar
+
+<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Variant="DrawerVariant.Temporary" Anchor="Anchor.End" Elevation="2" Width="400px" Class="container">
+    <div class="container">
+        <div class="messages">
+            <MudChat ChatPosition="ChatBubblePosition.Start">
+                <MudAvatar>AI</MudAvatar>
+                <MudChatBubble>
+                    Hello, How can I help you today?
+                </MudChatBubble>
+            </MudChat>
+            @foreach (var message in _messages)
+            {
+                if (message.FromAI)
+                {
+                    <MudChat ChatPosition="ChatBubblePosition.Start">
+                        <MudAvatar>AI</MudAvatar>
+                        <MudChatBubble>
+                            @message.Message
+                        </MudChatBubble>
+                    </MudChat>
+                }
+                else
+                {
+                    <MudChat ChatPosition="ChatBubblePosition.End">
+                        <MudAvatar>You</MudAvatar>
+                        <MudChatBubble>
+                            @message.Message
+                        </MudChatBubble>
+                    </MudChat>
+                }
+            }
+            @if (_waitingForReply)
+            {
+                <MudChat ChatPosition="ChatBubblePosition.Start">
+                    <MudAvatar>AI</MudAvatar>
+                    <MudChatBubble>
+                        &#x2022;&#x2022;&#x2022;
+                    </MudChatBubble>
+                </MudChat>
+            }
+        </div>
+        <EditForm Model="_question" OnSubmit="SendMessageAsync">
+            <div class="controls">
+                <MudTextField @bind-Value="_question" Lines="2" Variant="Variant.Filled" />
+                <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Filled.Send" Color="Color.Primary" />
+            </div>
+        </EditForm>
+    </div>
 </MudDrawer>
 
 @code {
 
+    private List<AIChatMessage> _messages = [];
     private bool _drawerOpen = false;
+    private string _question = string.Empty;
+    private bool _waitingForReply = false;
 
     public void ToggleChat()
     {
         _drawerOpen = !_drawerOpen;
     }
 
+    private async Task SendMessageAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_question))
+        {
+            return;
+        }
+
+        _messages.Add(
+            new AIChatMessage
+            {
+                FromAI = false,
+                Message = _question,
+            });
+        
+        _waitingForReply = true;
+
+        try
+        {
+            var request = new QuestionForAI
+            {
+                Question = _question,
+                AdditionalData = AIContext.Session,
+            };
+
+            var response = await AIService.AskAIAsync(request);
+
+            _messages.Add(
+                new AIChatMessage
+                {
+                    FromAI = true,
+                    Message = response.ToString(),
+                });
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+            _messages.RemoveAt(_messages.Count - 1);
+        }
+        finally
+        {
+            _waitingForReply = false;
+        }
+    }
 }
