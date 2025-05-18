@@ -1,7 +1,6 @@
 ﻿using LaptimeBaseAPI.Data;
 using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Car;
@@ -10,7 +9,6 @@ namespace LaptimeBaseAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize(Roles = "admin")]
     public class CarsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -34,20 +32,15 @@ namespace LaptimeBaseAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<CarDto>> PostCar(NewCarRequest request)
         {
-            var newCar = request.ToCarModel();
+            var newCar = new Car
+            {
+                Class = request.Class,
+            };
 
             _context.Cars.Add(newCar);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (CarExists(newCar.Class))
-                    return Conflict();
-                else throw;
-            }
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetCars), newCar.ToCarDto());
         }
 

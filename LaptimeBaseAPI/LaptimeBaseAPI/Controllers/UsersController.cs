@@ -1,5 +1,4 @@
 ﻿using LaptimeBaseAPI.Data;
-using LaptimeBaseAPI.Helper;
 using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +12,11 @@ namespace LaptimeBaseAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "admin")]
-    public class usersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public usersController(AppDbContext context)
+        public UsersController(AppDbContext context)
         {
             _context = context;
         }
@@ -42,7 +41,12 @@ namespace LaptimeBaseAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(NewUserRequest newUserRequest)
         {
-            var newUser = newUserRequest.ToUserModel();
+            var newUser = new User
+            {
+                IsAdmin = newUserRequest.IsAdmin,
+                Username = newUserRequest.Username,
+                Password = newUserRequest.Password,
+            };
 
             _context.Users.Add(newUser);
             try

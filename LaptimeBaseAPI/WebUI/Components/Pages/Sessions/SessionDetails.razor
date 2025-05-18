@@ -1,0 +1,42 @@
+@page "/sessions/{sessionId:int}"
+@using Shared.Laptime
+@using Shared.Session
+@using WebUI.Services
+@inject ISessionService SessionService
+
+@if (!_loading)
+{
+    <MudText Typo="Typo.h3">Session @(_session.Id) &dash; @(_session.Track.Name)</MudText>
+    <MudText Typo="Typo.subtitle1">@_session.HeldAt.ToShortDateString()</MudText>
+    
+    <MudDataGrid Items="_laptimes">
+        <Columns>
+            <TemplateColumn Title="#">
+                <CellTemplate>
+                    @context.Item.Index
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Laptime.Time" />
+            <PropertyColumn Property="x => x.Laptime.Team.Name" Title="Team Name" />
+            <PropertyColumn Property="x => x.Laptime.Team.Car.Class" Title="Car Class" />
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+    
+    private bool _loading = true;
+    private SessionDto _session;
+    private List<(int Index, LaptimeDto Laptime)> _laptimes;
+    
+    [Parameter]
+    public int SessionId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _session = await SessionService.GetSessionAsync(SessionId);
+        _laptimes = _session.Laptimes.Select((x, i) => (i + 1, x)).ToList();
+        _loading = false;
+    }
+
+}

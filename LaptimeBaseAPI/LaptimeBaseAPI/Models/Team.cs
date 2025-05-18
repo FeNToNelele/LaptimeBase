@@ -1,21 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LaptimeBaseAPI.Models
 {
     [Table("team")]
     public class Team
     {
-        [Column("user_id")]
-        public int UserId { get; set; }
-        public User User { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        [Column("car_id")]
-        public int CarId { get; set; }
-        public Car Car { get; set; }
+        public virtual Car Car { get; set; }
 
         [Column("name")]
         public required string Name { get; set; }
-
-        public ICollection<Laptime> Laptimes { get; set; } = new List<Laptime>();
     }
 }
