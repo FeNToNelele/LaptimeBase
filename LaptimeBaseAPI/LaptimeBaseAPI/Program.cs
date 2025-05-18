@@ -21,6 +21,11 @@ namespace LaptimeBaseAPI
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddHttpClient("AIBackend", client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:5000");
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

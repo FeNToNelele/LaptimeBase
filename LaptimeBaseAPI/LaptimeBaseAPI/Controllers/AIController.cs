@@ -20,8 +20,23 @@ namespace LaptimeBaseAPI.Controllers
         [HttpPost("askai")]
         public async Task<IActionResult> AskAI([FromBody] QuestionForAI question)
         {
-            var response = await _httpClient.PostAsJsonAsync("/ask", new { Question = question });
-            return Ok(await response.Content.ReadFromJsonAsync<object>());
+            var payload = new
+            {
+                question = question.Question,
+                additional_data = question.AdditionalData
+            };
+
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("/ask", payload);
+                response.EnsureSuccessStatusCode();
+                var result = await response.Content.ReadFromJsonAsync<object>();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
     }
 }

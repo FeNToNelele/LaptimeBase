@@ -1,4 +1,5 @@
 using LaptimeBaseAPI.Models;
+using Shared.AIQuestion;
 using Shared.Car;
 using Shared.Laptime;
 using Shared.Session;
