@@ -1,6 +1,7 @@
 ﻿using LaptimeBaseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Shared.AIQuestion;
+using System.Text.Json;
 
 namespace LaptimeBaseAPI.Controllers
 {
@@ -30,13 +31,27 @@ namespace LaptimeBaseAPI.Controllers
             {
                 var response = await _httpClient.PostAsJsonAsync("/ask", payload);
                 response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<object>();
-                return Ok(result);
+
+                var result = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+                if (result.TryGetProperty("answer", out var answerElement))
+                {
+                    var answer = answerElement.GetString();
+
+                    //Eliminate escaped \n (e.g., "\\n")
+                    var prettyAnswer = answer?.Replace("\\n", "\n");
+
+                    Console.WriteLine(prettyAnswer);
+                    return Content(prettyAnswer ?? "", "text/plain");
+                }
+
+                return StatusCode(500, "Missing 'answer' in response.");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = ex.Message });
+                return StatusCode(500, ex.Message);
             }
         }
+
     }
 }

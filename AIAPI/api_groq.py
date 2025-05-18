@@ -9,7 +9,7 @@ app = Flask(__name__)
 client = ChatGroq(
     temperature=0.8,
     api_key=os.environ.get("LAPTIMEBASE_API_KEY"),
-    model_name="llama3-70b-8192"
+    model_name="llama-3.3-70b-versatile"
 )
 
 # Static system instruction
@@ -20,6 +20,7 @@ system_prompt = (
     "Short answer, polite, friendly, willing to help."
 )
 
+
 # The user prompt includes the question and structured session data
 human_prompt = """User question: {question}
 
@@ -27,7 +28,7 @@ Session data:
 Held at: {held_at}
 Ambient temp: {ambient_temp} °C
 Track temp: {track_temp} °C
-Track: {track_name}, layout: {track_layout}, length: {track_length_km} km
+Track: {track_name}
 
 Laptimes:
 {laptimes}
@@ -40,35 +41,37 @@ chain = prompt | client
 def ask_llm():
     data = request.get_json()
 
-    if not data or 'question' not in data or 'session' not in data:
-        return jsonify({"error": "Missing 'question' or 'session' in request"}), 400
-
     question = data['question']
-    session = data['session']
+    additional_data = data['additional_data']
+
+    track = additional_data.get('track', {})
+    laptimes_list = additional_data.get('laptimes', [])
+    
+    formatted_laptimes = "\n".join([
+        f"Team {lap.get('team', {}).get('name', 'Unknown')} ({lap.get('team', {}).get('car', {}).get('class', 'Unknown class')}): {lap.get('time')}"
+        for lap in laptimes_list
+    ])
+
+    print(len(formatted_laptimes))
+
+    if len(formatted_laptimes) > 41840:
+        formatted_laptimes = formatted_laptimes[:41840]
+
+    inputs = {
+        "question": question,
+        "held_at": additional_data.get('heldAt'),
+        "ambient_temp": additional_data.get('ambientTemp'),
+        "track_temp": additional_data.get('trackTemp'),
+        "track_name": track.get('name'),
+        "laptimes": formatted_laptimes
+    }
 
     try:
-        track = session.get('track', {})
-        laptimes_list = session.get('laptimes', [])
-        formatted_laptimes = "\n".join([
-            f"Lap {lap.get('lapNumber')}: S1={lap.get('sector1')}s, S2={lap.get('sector2')}s, S3={lap.get('sector3')}s, Total={lap.get('total')}s"
-            for lap in laptimes_list
-        ])
-
-        inputs = {
-            "question": question,
-            "held_at": session.get('heldAt'),
-            "ambient_temp": session.get('ambientTemp'),
-            "track_temp": session.get('trackTemp'),
-            "track_name": track.get('name'),
-            "track_layout": track.get('layout'),
-            "track_length_km": track.get('lengthKm'),
-            "laptimes": formatted_laptimes
-        }
-
         response = chain.invoke(inputs)
         return jsonify({"answer": response.content}), 200
 
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
