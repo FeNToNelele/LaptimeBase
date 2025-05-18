@@ -3,32 +3,42 @@
 @using WebUI.Services
 @inject ISessionService SessionService
 
-<MudText Typo="Typo.h3">
-    Sessions
-</MudText>
+<PageTitle>Sessions</PageTitle>
 
-<MudDataGrid Items="_sessions" Loading="_loading">
-    <Columns>
-        <TemplateColumn Title="#">
-            <CellTemplate>
-                @{
-                    var link = $"/sessions/{context.Item.Id}";
+<MudStack>
+    <MudText Typo="Typo.h4">Sessions</MudText>
 
-                    <MudLink Href="@link">
-                        @context.Item.Id
-                    </MudLink>
-                }
-            </CellTemplate>
-        </TemplateColumn>
-        <PropertyColumn Property="x => x.Track.Name" />
-        <PropertyColumn Property="x => x.HeldAt" />
-        <TemplateColumn Title="Temperature">
-            <CellTemplate>
-                @(context.Item.TrackTemp)/@(context.Item.AmbientTemp) C&deg;
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+    <MudCard>
+        <MudCardContent>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Href="/sessions/new" Color="Color.Primary" Variant="Variant.Filled">
+                New session
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+    
+    <MudDataGrid Items="_sessions" Loading="_loading">
+        <Columns>
+            <TemplateColumn Title="#">
+                <CellTemplate>
+                    @{
+                        var link = $"/sessions/{context.Item.Id}";
+
+                        <MudLink Href="@link">
+                            @context.Item.Id
+                        </MudLink>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Track.Name" Title="Track name" />
+            <PropertyColumn Property="x => x.HeldAt" Title="Held at" />
+            <TemplateColumn Title="Temperature">
+                <CellTemplate>
+                    @(context.Item.TrackTemp)/@(context.Item.AmbientTemp) C&deg;
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudStack>
 
 @code {
 

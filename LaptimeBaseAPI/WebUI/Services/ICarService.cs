@@ -9,5 +9,5 @@ public interface ICarService
     Task<List<CarDto>> GetCarsAsync();
     
     [Post("/api/cars")]
-    Task<CarDto> PostCarAsync([Body] NewCarRequest request);
+    Task<CarDto> CreateCarAsync([Body] NewCarRequest request);
 }

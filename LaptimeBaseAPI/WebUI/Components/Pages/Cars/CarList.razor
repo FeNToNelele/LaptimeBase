@@ -7,25 +7,23 @@
 
 <PageTitle>Cars</PageTitle>
 
-<MudText Typo="Typo.h5">Cars</MudText>
-<MudButton Color="Color.Primary" Href="/car/new" Variant="Variant.Filled">
-    <MudIcon Icon="@Icons.Material.Filled.Add" />
-    New car
-</MudButton>
-<MudDataGrid Items="_cars" Virtualize="true" Loading="Loading" >
-    <Columns>
-        <PropertyColumn Property="x => x.Class" Title="Class" />
-        <TemplateColumn>
-            <CellTemplate>
-                @{
-                    var uri = $"/cars/{context?.Item?.Id}";
-                    
-                    <MudButton Href="@uri">Details</MudButton>
-                }
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+<MudStack>
+    <MudText Typo="Typo.h4">Cars</MudText>
+
+    <MudCard>
+        <MudCardContent>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/car/new" Variant="Variant.Filled">
+                New car
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+
+    <MudDataGrid Items="_cars" Loading="Loading" >
+        <Columns>
+            <PropertyColumn Property="x => x.Class" Title="Class" />
+        </Columns>
+    </MudDataGrid>
+</MudStack>
 
 @code {
 

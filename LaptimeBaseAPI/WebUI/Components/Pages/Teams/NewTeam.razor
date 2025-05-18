@@ -1,0 +1,78 @@
+@page "/team/new"
+@using Shared.Car
+@using Shared.Team
+@using WebUI.Services
+@inject ITeamService TeamService
+@inject ICarService CarService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<PageTitle>New team</PageTitle>
+
+@if (!_loading)
+{
+    <EditForm Model="_request" OnValidSubmit="SubmitAsync">
+        <DataAnnotationsValidator />
+        
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">New team</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudStack>
+                    <MudTextField Label="Name" @bind-Value="_request.Name" For="() => _request.Name" />
+                    <MudSelect Label="Car" @bind-Value="_request.CarId" For="() => _request.CarId">
+                        @foreach (var car in _cars)
+                        {
+                            <MudSelectItem Value="car.Id">
+                                @car.Class
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudStack>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+                    Add
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@code {
+
+    private bool _loading = true;
+    private NewTeamRequest _request = new();
+    private List<CarDto> _cars;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _cars = await CarService.GetCarsAsync();
+            _loading = false;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        try
+        {
+            await TeamService.CreateTeamAsync(_request);
+            Snackbar.Add("Team created successfully", Severity.Success);
+            NavigationManager.NavigateTo("/team");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+}

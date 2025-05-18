@@ -1,0 +1,134 @@
+@page "/sessions/new"
+@using Shared.Laptime
+@using Shared.Session
+@using Shared.Team
+@using Shared.Track
+@using WebUI.Services
+@inject ITrackService TrackService
+@inject ITeamService TeamService
+@inject ISessionService SessionService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+<PageTitle>New session</PageTitle>
+
+@if (!_loading)
+{
+    <EditForm EditContext="_editContext" OnSubmit="SubmitFormAsync">
+        <DataAnnotationsValidator />
+
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">New session</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudStack>
+                    <MudDatePicker Label="Held at" @bind-Date="_heldAt" />
+                    <MudNumericField Label="Ambient temperature" @bind-Value="_request.AmbientTemp" For="() => _request.AmbientTemp" />
+                    <MudNumericField Label="Track temperature" @bind-Value="_request.TrackTemp" For="() => _request.TrackTemp" />
+                    <MudSelect Label="Track" @bind-Value="_request.TrackId" For="() => _request.TrackId">
+                        @foreach (var track in _tracks)
+                        {
+                            <MudSelectItem Value="track.Id">
+                                @track.Name
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudInputLabel>Laptimes</MudInputLabel>
+                    <MudStack>
+                        @foreach (var laptimeRequest in _laptimeRequests)
+                        {
+                            <MudStack Row="true">
+                                <MudTextField @bind-Value="laptimeRequest.Laptime" Label="Time" />
+                                <MudSelect @bind-Value="laptimeRequest.TeamId" Label="Team">
+                                    @foreach (var team in _teams)
+                                    {
+                                        <MudSelectItem Value="@team.Id">
+                                            @team.Name
+                                        </MudSelectItem>
+                                    }
+                                </MudSelect>
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="() => RemoveLaptimeRequest(laptimeRequest)" />
+                            </MudStack>
+                        }
+                        <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" OnClick="() => AddLaptimeRequest()">
+                            Add laptime
+                        </MudButton>
+                    </MudStack>
+                </MudStack>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
+                    Add session
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+}
+
+@code {
+    
+    private bool _loading = true;
+    private DateTime? _heldAt;
+    private EditContext _editContext;
+    private List<TrackDto> _tracks;
+    private List<TeamDto> _teams;
+    private List<NewLapRequest> _laptimeRequests = new();
+    private NewSessionWithLaptimesRequest _request = new()
+    {
+        NewLapRequests = new List<NewLapRequest>(),
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _editContext = new EditContext(_request);
+
+        try
+        {
+            _tracks = await TrackService.GetTracksAsync();
+            _teams = await TeamService.GetTeamsAsync();
+            _loading = false;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task SubmitFormAsync()
+    {
+        _request.HeldAt = _heldAt ?? DateTime.Parse("0000-01-01");
+
+        var isValid = _editContext.Validate();
+
+        if (!isValid)
+        {
+            return;
+        }
+
+        try
+        {
+            await SessionService.CreateSessionAsync(_request);
+            Snackbar.Add("Session created successfully", Severity.Success);
+            NavigationManager.NavigateTo("/sessions");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+    
+    private void RemoveLaptimeRequest(NewLapRequest request)
+    {
+        _laptimeRequests.Remove(request);
+    }
+
+    private void AddLaptimeRequest()
+    {
+        _laptimeRequests.Add(new NewLapRequest());
+    }
+
+}

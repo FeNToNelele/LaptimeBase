@@ -5,13 +5,26 @@
 @inject ILogger<TeamList> Logger
 @inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h1">Teams</MudText>
+<PageTitle>Teams</PageTitle>
 
-<MudDataGrid Items="_teams" Virtualize="true" Loading="Loading">
-    <Columns>
-        <PropertyColumn Property="x => x.Name" Title="Name" />
-    </Columns>
-</MudDataGrid>
+<MudStack>
+    <MudText Typo="Typo.h4">Teams</MudText>
+
+    <MudCard>
+        <MudCardContent>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/team/new" Variant="Variant.Filled">
+                New team
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+
+    <MudDataGrid Items="_teams" Virtualize="true" Loading="Loading">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+            <PropertyColumn Property="x => x.Car.Class" Title="Car class" />
+        </Columns>
+    </MudDataGrid>
+</MudStack>
 
 @code {
 
