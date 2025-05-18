@@ -2,7 +2,10 @@
 @using Shared.Laptime
 @using Shared.Session
 @using WebUI.Services
+@implements IDisposable
 @inject ISessionService SessionService
+@inject IAIContext AIContext
+@inject ISnackbar Snackar
 
 @if (!_loading)
 {
@@ -34,9 +37,22 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _session = await SessionService.GetSessionAsync(SessionId);
-        _laptimes = _session.Laptimes.Select((x, i) => (i + 1, x)).ToList();
-        _loading = false;
+        try
+        {
+            _session = await SessionService.GetSessionAsync(SessionId);
+            AIContext.Session = _session;
+            _laptimes = _session.Laptimes.Select((x, i) => (i + 1, x)).ToList();
+            _loading = false;
+        }
+        catch (Exception ex)
+        {
+            Snackar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    public void Dispose()
+    {
+        AIContext.Session = null;
     }
 
 }
