@@ -51,8 +51,8 @@ namespace LaptimeBaseAPI.Controllers
             return Ok(result);
         }
 
-        // POST: api/sessions
-        [HttpPost]
+        // POST: api/sessions/old
+        [HttpPost("old")]
         public async Task<ActionResult<SessionDto>> PostSession(NewSessionRequest request)
         {
             var track = await _context.Tracks.FindAsync(request.TrackId);
@@ -76,6 +76,56 @@ namespace LaptimeBaseAPI.Controllers
             {
                 return BadRequest("Laptimes with IDs " + string.Join(", ", notFoundLaptimes) + " not found.");
             }
+
+            var newSession = new Session
+            {
+                AmbientTemp = request.AmbientTemp,
+                HeldAt = request.HeldAt,
+                TrackTemp = request.TrackTemp,
+                Laptimes = laptimes,
+                Track = track,
+            };
+
+            _context.Sessions.Add(newSession);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetSessions), newSession.ToSessionDto());
+        }
+        
+        // POST: api/sessions
+        // Valamiért bugos. Laptime-okat nem rendeli hozzá a session-höz
+        [HttpPost]
+        public async Task<ActionResult<SessionDto>> PostSession(NewSessionWithLaptimesRequest request)
+        {
+            var track = await _context.Tracks.FindAsync(request.TrackId);
+            
+            if (track is null)
+            {
+                return BadRequest($"Track with ID {request.TrackId} not found.");
+            }
+
+            var laptimes = new List<Laptime>();
+            foreach (var laptimeRequest in request.NewLapRequests)
+            {
+                var team = await _context.Teams.FindAsync(laptimeRequest.TeamId);
+                
+                if (team is null)
+                {
+                    return BadRequest($"Team with ID {laptimeRequest.TeamId} not found.");
+                }
+                
+                laptimes.Add(
+                    new Laptime
+                    {
+                        CreatedAt = DateTime.Now,
+                        Team = team,
+                        Time = laptimeRequest.Laptime,
+                    });
+            }
+
+            await _context.Laptimes.AddRangeAsync(laptimes);
+            await _context.SaveChangesAsync();
 
             var newSession = new Session
             {

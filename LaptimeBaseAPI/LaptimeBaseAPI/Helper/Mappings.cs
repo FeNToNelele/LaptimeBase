@@ -23,6 +23,7 @@ public static class Mappings
     {
         return new TeamDto
         {
+            Id = team.Id,
             Car = team.Car?.ToCarDto(),
             Name = team.Name,
         };

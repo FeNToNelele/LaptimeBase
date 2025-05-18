@@ -1,12 +1,11 @@
-@page "/car/new"
-
-@using Shared.Car
+@page "/track/new"
+@using Shared.Track
 @using WebUI.Services
+@inject ITrackService TrackService
 @inject ISnackbar Snackbar
-@inject ICarService CarService
 @inject NavigationManager NavigationManager
 
-<PageTitle>New car</PageTitle>
+<PageTitle>Tracks</PageTitle>
 
 <EditForm Model="_request" OnValidSubmit="SubmitAsync">
     <DataAnnotationsValidator />
@@ -14,11 +13,11 @@
     <MudCard>
         <MudCardHeader>
             <CardHeaderContent>
-                <MudText Typo="Typo.h6">New car</MudText>
+                <MudText Typo="Typo.h6">New track</MudText>
             </CardHeaderContent>
         </MudCardHeader>
         <MudCardContent>
-            <MudTextField Label="Class" @bind-Value="_request.Class" For="() => _request.Class" />
+            <MudTextField Label="Name" @bind-Value="_request.Name" For="() => _request.Name" />
         </MudCardContent>
         <MudCardActions>
             <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">
@@ -29,16 +28,16 @@
 </EditForm>
 
 @code {
-
-    private NewCarRequest _request = new();
+    
+    private NewTrackRequest _request = new();
 
     private async Task SubmitAsync()
     {
         try
         {
-            await CarService.CreateCarAsync(_request);
-            Snackbar.Add("Car created successfully", Severity.Success);
-            NavigationManager.NavigateTo("/car");
+            await TrackService.CreateTrackAsync(_request);
+            Snackbar.Add("Track created successfully", Severity.Success);
+            NavigationManager.NavigateTo("/track");
         }
         catch (Exception ex)
         {

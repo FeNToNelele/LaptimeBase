@@ -11,14 +11,14 @@
         <NavigationMenu />
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="padding-top: 1rem">
             @Body
         </MudContainer>
     </MudMainContent>
     <AiChat @ref="_aiChat" />
 </MudLayout>
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="true" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />

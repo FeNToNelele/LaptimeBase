@@ -7,4 +7,7 @@ public interface ITeamService
 {
     [Get("/api/teams")]
     Task<List<TeamDto>> GetTeamsAsync();
+    
+    [Post("/api/teams")]
+    Task<TeamDto> CreateTeamAsync([Body] NewTeamRequest newTeamRequest);
 }

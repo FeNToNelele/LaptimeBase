@@ -22,6 +22,9 @@ builder.Services.AddRefitClient<ITeamService>()
 builder.Services.AddRefitClient<ISessionService>()
     .ConfigureHttpClient(x => x.BaseAddress = backendUri);
 
+builder.Services.AddRefitClient<ITrackService>()
+    .ConfigureHttpClient(x => x.BaseAddress = backendUri);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

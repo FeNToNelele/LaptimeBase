@@ -11,4 +11,7 @@ public interface ISessionService
     
     [Get("/api/sessions/{id}")]
     Task<SessionDto> GetSessionAsync(int id);
+    
+    [Post("/api/sessions")]
+    Task<SessionDto> CreateSessionAsync([Body] NewSessionWithLaptimesRequest request);
 }

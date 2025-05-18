@@ -1,0 +1,45 @@
+@page "/track"
+@using Shared.Track
+@using WebUI.Services
+@inject ITrackService TrackService
+@inject ISnackbar Snackbar
+
+<PageTitle>Tracks</PageTitle>
+
+<MudStack>
+    <MudText Typo="Typo.h4">Tracks</MudText>
+
+    <MudCard>
+        <MudCardContent>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="/track/new" Variant="Variant.Filled">
+                New track
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+
+    <MudDataGrid Items="_tracks" Loading="_loading" >
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Name" />
+        </Columns>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+    
+    private bool _loading = true;
+    private List<TrackDto> _tracks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _tracks = await TrackService.GetTracksAsync();
+            _loading = false;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+}

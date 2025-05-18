@@ -3,24 +3,29 @@
 @using Shared.Session
 @using WebUI.Services
 @inject ISessionService SessionService
+@inject ISnackbar Snackar
+
+<PageTitle>Session details</PageTitle>
 
 @if (!_loading)
 {
-    <MudText Typo="Typo.h3">Session @(_session.Id) &dash; @(_session.Track.Name)</MudText>
-    <MudText Typo="Typo.subtitle1">@_session.HeldAt.ToShortDateString()</MudText>
-    
-    <MudDataGrid Items="_laptimes">
-        <Columns>
-            <TemplateColumn Title="#">
-                <CellTemplate>
-                    @context.Item.Index
-                </CellTemplate>
-            </TemplateColumn>
-            <PropertyColumn Property="x => x.Laptime.Time" />
-            <PropertyColumn Property="x => x.Laptime.Team.Name" Title="Team Name" />
-            <PropertyColumn Property="x => x.Laptime.Team.Car.Class" Title="Car Class" />
-        </Columns>
-    </MudDataGrid>
+    <MudStack>
+        <MudText Typo="Typo.h3">Session @(_session.Id) &dash; @(_session.Track.Name)</MudText>
+        <MudText Typo="Typo.subtitle1">@_session.HeldAt.ToShortDateString()</MudText>
+        
+        <MudDataGrid Items="_laptimes" Virtualize="true" Height="50vh">
+            <Columns>
+                <TemplateColumn Title="#">
+                    <CellTemplate>
+                        @context.Item.Index
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property="x => x.Laptime.Time" />
+                <PropertyColumn Property="x => x.Laptime.Team.Name" Title="Team Name" />
+                <PropertyColumn Property="x => x.Laptime.Team.Car.Class" Title="Car Class" />
+            </Columns>
+        </MudDataGrid>
+    </MudStack>
 }
 
 @code {
@@ -34,9 +39,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _session = await SessionService.GetSessionAsync(SessionId);
-        _laptimes = _session.Laptimes.Select((x, i) => (i + 1, x)).ToList();
-        _loading = false;
+        try
+        {
+            _session = await SessionService.GetSessionAsync(SessionId);
+            _laptimes = _session.Laptimes.Select((x, i) => (i + 1, x)).ToList();
+            _loading = false;
+        }
+        catch (Exception ex)
+        {
+            Snackar.Add(ex.Message, Severity.Error);
+        }
     }
 
 }
