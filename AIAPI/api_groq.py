@@ -54,8 +54,11 @@ def ask_llm():
 
     print(len(formatted_laptimes))
 
-    if len(formatted_laptimes) > 41840:
-        formatted_laptimes = formatted_laptimes[:41840]
+    #if len(formatted_laptimes) > 20000:
+    #    formatted_laptimes = formatted_laptimes[:20000] #41840
+
+    if len(formatted_laptimes) > 2000:
+        formatted_laptimes = formatted_laptimes[:2000] #41840
 
     inputs = {
         "question": question,

@@ -41,11 +41,10 @@ namespace LaptimeBaseAPI.Controllers
                     //Eliminate escaped \n (e.g., "\\n")
                     var prettyAnswer = answer?.Replace("\\n", "\n");
 
-                    Console.WriteLine(prettyAnswer);
-                    return Content(prettyAnswer ?? "", "text/plain");
+                    return Content(prettyAnswer, "text/plain");
                 }
 
-                return StatusCode(500, "Missing 'answer' in response.");
+                return StatusCode(500, "Missing answer in response.");
             }
             catch (Exception ex)
             {
